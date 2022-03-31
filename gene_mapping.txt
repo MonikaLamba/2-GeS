@@ -1,0 +1,40 @@
+Install GEOquery
+
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("GEOquery")
+
+rm(list=ls())
+require(GEOquery)
+myGSE="GSE18229"
+gset<-getGEO(myGSE,GSEMatrix = TRUE)
+if (length(gset)>1) idx<-grep("GPL1390",attr(gset,"names")) else idx<-1
+gset<-gset[[idx]]
+ex<-exprs(gset)
+str(ex)
+str(gset)
+str(gset)
+head(ex)
+dictionary=gset@featureData@data[,c('ID','GENE_NAME')]
+GENE_NAMEs=unique(as.character(dictionary$GENE_NAME))      'Gene Symbol'
+ex2=ex[match(GENE_NAMEs,dictionary$GENE_NAME),] 
+rownames(ex2)=GENE_NAMEs
+dim(ex2)
+D<-na.omit(ex2)
+dim(D)
+View(D)
+D1<-write.csv(D,file="D1.csv")
+library(readxl)
+D2 <- read_excel("C:/Users/Lamba And Associates/Desktop/D2.xlsx")
+View(D2)
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+dfNorm<-as.data.frame(lapply(D2, normalize))
+View(dfNorm)
+D3<-write.csv(dfNorm,file="D3.csv")
+
+
+
+
